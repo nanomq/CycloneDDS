@@ -1,9 +1,10 @@
-module HelloWorldData
+module HelloWorld
 {
-  struct Msg
-  {
-    @key
-    long userID;
-    string message;
-  };
+struct Msg
+{
+	uint64 index;
+	string message;
+	uint32 id;
+};
+
 };

@@ -9,19 +9,19 @@ int main (int argc, char ** argv)
   dds_entity_t topic;
   dds_entity_t writer;
   dds_return_t rc;
-  HelloWorldData_Msg msg;
+  HelloWorld_Msg msg;
   uint32_t status = 0;
   (void)argc;
   (void)argv;
 
   /* Create a Participant. */
-  participant = dds_create_participant (DDS_DOMAIN_DEFAULT, NULL, NULL);
+  participant = dds_create_participant (0, NULL, NULL);
   if (participant < 0)
     DDS_FATAL("dds_create_participant: %s\n", dds_strretcode(-participant));
 
   /* Create a Topic. */
   topic = dds_create_topic (
-    participant, &HelloWorldData_Msg_desc, "HelloWorldData_Msg", NULL, NULL);
+    participant, &HelloWorld_Msg_desc, "Data", NULL, NULL);
   if (topic < 0)
     DDS_FATAL("dds_create_topic: %s\n", dds_strretcode(-topic));
 
@@ -48,11 +48,11 @@ int main (int argc, char ** argv)
   }
 
   /* Create a message to write. */
-  msg.userID = 1;
+  msg.index = 1;
   msg.message = "Hello World";
 
   printf ("=== [Publisher]  Writing : ");
-  printf ("Message (%"PRId32", %s)\n", msg.userID, msg.message);
+  printf ("Message (%"PRId32", %s)\n", msg.index, msg.message);
   fflush (stdout);
 
   rc = dds_write (writer, &msg);

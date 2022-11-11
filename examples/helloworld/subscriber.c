@@ -5,14 +5,14 @@
 #include <stdlib.h>
 
 /* An array of one message (aka sample in dds terms) will be used. */
-#define MAX_SAMPLES 1
+#define MAX_SAMPLES 10
 
 int main (int argc, char ** argv)
 {
   dds_entity_t participant;
   dds_entity_t topic;
   dds_entity_t reader;
-  HelloWorldData_Msg *msg;
+  HelloWorld_Msg *msg;
   void *samples[MAX_SAMPLES];
   dds_sample_info_t infos[MAX_SAMPLES];
   dds_return_t rc;
@@ -21,13 +21,13 @@ int main (int argc, char ** argv)
   (void)argv;
 
   /* Create a Participant. */
-  participant = dds_create_participant (DDS_DOMAIN_DEFAULT, NULL, NULL);
+  participant = dds_create_participant (0, NULL, NULL);
   if (participant < 0)
     DDS_FATAL("dds_create_participant: %s\n", dds_strretcode(-participant));
 
   /* Create a Topic. */
   topic = dds_create_topic (
-    participant, &HelloWorldData_Msg_desc, "HelloWorldData_Msg", NULL, NULL);
+    participant, &HelloWorld_Msg_desc, "Data", NULL, NULL);
   if (topic < 0)
     DDS_FATAL("dds_create_topic: %s\n", dds_strretcode(-topic));
 
@@ -44,7 +44,7 @@ int main (int argc, char ** argv)
 
   /* Initialize sample buffer, by pointing the void pointer within
    * the buffer array to a valid sample memory location. */
-  samples[0] = HelloWorldData_Msg__alloc ();
+  samples[0] = HelloWorld_Msg__alloc ();
 
   /* Poll until data has been read. */
   while (true)
@@ -59,9 +59,9 @@ int main (int argc, char ** argv)
     if ((rc > 0) && (infos[0].valid_data))
     {
       /* Print Message. */
-      msg = (HelloWorldData_Msg*) samples[0];
+      msg = (HelloWorld_Msg*) samples[0];
       printf ("=== [Subscriber] Received : ");
-      printf ("Message (%"PRId32", %s)\n", msg->userID, msg->message);
+      printf ("Message (%"PRId32", %s)\n", msg->index, msg->message);
       fflush (stdout);
       break;
     }
@@ -73,7 +73,7 @@ int main (int argc, char ** argv)
   }
 
   /* Free the data location. */
-  HelloWorldData_Msg_free (samples[0], DDS_FREE_ALL);
+  HelloWorld_Msg_free (samples[0], DDS_FREE_ALL);
 
   /* Deleting the participant will delete all its children recursively as well. */
   rc = dds_delete (participant);

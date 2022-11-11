@@ -224,6 +224,7 @@ if(SANITIZER)
     endif()
   endforeach()
 endif()
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
 
 find_package(codecov)
 set(MEMORYCHECK_COMMAND_OPTIONS "--track-origins=yes --leak-check=full --trace-children=yes --child-silent-after-fork=yes --xml=yes --xml-file=TestResultValgrind_%p.xml --tool=memcheck --show-reachable=yes --leak-resolution=high")
@@ -239,7 +240,7 @@ option(BUILD_TESTING "Build the testing tree." OFF)
 option(BUILD_IDLC_XTESTS "Build the idlc compile tests" OFF)
 
 # Disable building examples by default because it is not strictly required.
-option(BUILD_EXAMPLES "Build examples." OFF)
+option(BUILD_EXAMPLES "Build examples." ON)
 
 option(ENABLE_LTO "Enable link time optimization." ON)
 
